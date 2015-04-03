@@ -16,17 +16,32 @@ public class JointOrientation : MonoBehaviour
     // This object must have a ThalmicMyo script attached.
     public GameObject myo = null;
 
-	public float reloadTime = 1f;
-	public GameObject rocket;
-	public float speed;
+	public float LoopNumber;
+	public float LoopHeight;
+	public float LoopRadius;
 	public Transform crossSphere;
 	public Transform camera;
 	public GameObject crossHair;
 	public GameObject DrumStick;
+	public GameObject DrumBeat;
 	private bool Grab;
+	private GameObject hoveredBeat;
 
 	void Start () {
+		// Begin with drumstick
 		Grab = false;
+		crossHair.GetComponent<Renderer> ().enabled = false;
+
+		// Create virtual drumloop
+		for (int i = 0; i < LoopNumber; i++) 
+			{
+			float AngleDegrees = i * (360/LoopNumber);
+			float AngleRadians = Mathf.Deg2Rad * AngleDegrees;
+			Vector3 BeatPosition = new Vector3(Mathf.Sin(AngleRadians) * LoopRadius, LoopHeight, Mathf.Cos(AngleRadians) * LoopRadius);
+			Quaternion BeatRotation =  Quaternion.Euler(new Vector3(0, AngleDegrees, 0));
+
+			GameObject clone = Instantiate(DrumBeat, BeatPosition, BeatRotation) as GameObject;
+			}
 	}
 
 
@@ -70,22 +85,49 @@ public class JointOrientation : MonoBehaviour
             updateReference = true;
         }
 
+// Grab event. For Max 
 		if (Grab == false) {
 			if (thalmicMyo.pose == Pose.Fist) {
 				DrumStick.GetComponent<Renderer> ().enabled = false;
 				crossHair.GetComponent<Renderer> ().enabled = true;
 				Grab = true;
-			} else {
-				DrumStick.GetComponent<Renderer> ().enabled = true;
-				crossHair.GetComponent<Renderer> ().enabled = false;
 			}
 		} else {
 			if (thalmicMyo.pose == Pose.FingersSpread) {
 				DrumStick.GetComponent<Renderer> ().enabled = true;
 				crossHair.GetComponent<Renderer> ().enabled = false;
 				Grab = false;
+
+				if (hoveredBeat!= null)
+					hoveredBeat.GetComponent<Renderer>().material.color = Color.white;
+
+// use 4 raycasts to check top, bottom, left, right
+// so don't have double tap problem, require people to double tap both fingers
+				RaycastHit hit;
+				Vector3 fwd = crossHair.transform.TransformDirection(Vector3.forward);
+				if (Physics.Raycast(transform.position, fwd, out hit, 15)){
+					hoveredBeat = hit.collider.gameObject.GetComponent<Collider>().gameObject;
+					hoveredBeat.GetComponent<Renderer>().material.color = Color.red;
+				}
+				hoveredBeat = null;
 			}
+			else{
+				RaycastHit hit;
+				Vector3 fwd = crossHair.transform.TransformDirection(Vector3.forward);
+				if (Physics.Raycast(transform.position, fwd, out hit, 15)){
+					hoveredBeat = hit.collider.gameObject.GetComponent<Collider>().gameObject;
+					hoveredBeat.GetComponent<Renderer>().material.color = Color.yellow;
+					}
+				else{
+					if (hoveredBeat!= null){
+						hoveredBeat.GetComponent<Renderer>().material.color = Color.white;
+						hoveredBeat = null;
+					}
+				}
+			}
+			
 		}
+
 //rotate drum stick
 		crossSphere.rotation = transform.rotation;
 
@@ -106,15 +148,6 @@ public class JointOrientation : MonoBehaviour
             // the roll value matches the reference.
             Vector3 referenceZeroRoll = computeZeroRollVector (myo.transform.forward);
             _referenceRoll = rollFromZero (referenceZeroRoll, myo.transform.forward, myo.transform.up);
-
-			Debug.Log("Myo");
-			Debug.Log("x = Sin  " + Mathf.Sin(camera.eulerAngles.y *  Mathf.Deg2Rad));
-			Debug.Log("z = Cos " + Mathf.Cos(camera.eulerAngles.y *  Mathf.Deg2Rad));
-
-			Debug.Log("Myo");
-			Debug.Log("y " + camera.eulerAngles.y);
-
-
         }
 
         // Current zero roll vector and roll value.
