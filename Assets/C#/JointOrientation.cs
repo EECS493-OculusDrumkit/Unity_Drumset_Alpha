@@ -21,7 +21,7 @@ public class JointOrientation : MonoBehaviour
 	public float LoopRadius;
 	public Transform crossSphere;
 	public Transform camera;
-	public GameObject crossHair;
+	//public GameObject crossHair;
 	public GameObject DrumStick;
 	public GameObject DrumBeat;
 
@@ -36,6 +36,9 @@ public class JointOrientation : MonoBehaviour
 
 	private beat BeatScript;
 	private beat grabbedScript;
+
+	//Handle for Crosshair Animator
+	public Animator crossHair;
 
 	void Start () {
 		// Begin with drumstick
@@ -76,7 +79,6 @@ public class JointOrientation : MonoBehaviour
     // Update is called once per frame.
     void Update ()
     {
-
 		// Access the ThalmicMyo component attached to the Myo object.
         ThalmicMyo thalmicMyo = myo.GetComponent<ThalmicMyo> ();
 
@@ -101,7 +103,12 @@ public class JointOrientation : MonoBehaviour
 // Grab event. For Max 
 		// Object hasn't been grabbed
 		if (Grab == 0) {
+
 			if (thalmicMyo.pose == Pose.Fist) {
+
+				//set grab trigger for crossHair
+				crossHair.SetTrigger("Fist");
+
 				RaycastHit hit;
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
 				if (Physics.Raycast (transform.position, fwd, out hit, 15, InstramentLayermask.value)) {
@@ -124,36 +131,53 @@ public class JointOrientation : MonoBehaviour
 				RaycastHit hit;
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
 				if (Physics.Raycast (transform.position, fwd, out hit, 15, InstramentLayermask.value)) {
+					// go to hover
+					crossHair.SetBool ("overObject", true);
+					/*
 					crossHair.GetComponent<Renderer> ().material.color = Color.yellow;
 					if (crossHair.transform.localScale.x > 0.1f)
 						crossHair.transform.localScale = new Vector3 (0.01f, 0.01f, 0.0f);
 					else
 						crossHair.transform.localScale = new Vector3 (crossHair.transform.localScale.x + 0.002f, crossHair.transform.localScale.y + 0.002f, 0.0f);
+					*/
 				} else if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
 					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
 					BeatScript = (beat) hoveredBeat.GetComponent(typeof(beat));
 					if (BeatScript.occupied == true){
+						// go to hover
+						crossHair.SetBool ("overObject", true);
+						/*
 						crossHair.GetComponent<Renderer> ().material.color = Color.yellow;
 						if (crossHair.transform.localScale.x > 0.1f)
 							crossHair.transform.localScale = new Vector3 (0.01f, 0.01f, 0.0f);
 						else
 							crossHair.transform.localScale = new Vector3 (crossHair.transform.localScale.x + 0.002f, crossHair.transform.localScale.y + 0.002f, 0.0f);
+						*/
 					} else {
-						crossHair.GetComponent<Renderer> ().material.color = Color.black;
-						crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
+						//crossHair.GetComponent<Renderer> ().material.color = Color.black;
+						//crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
+						crossHair.SetBool ("overObject", false);
 					}
 				} else {
-					crossHair.GetComponent<Renderer> ().material.color = Color.black;
-					crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
+					//crossHair.GetComponent<Renderer> ().material.color = Color.black;
+					//crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
+
+					//set crossHair to not hovering over Object
+					crossHair.SetBool ("overObject", false);
+
 				}
 			}
 			//object has been grabbed
 		} else if (Grab == 1) {
+
 			if (thalmicMyo.pose == Pose.FingersSpread) {
+				//set grab trigger for crossHair
+				crossHair.SetTrigger("Release");
+
 				//DrumStick.GetComponent<Renderer> ().enabled = true;
 				//crossHair.GetComponent<Renderer> ().enabled = false;
 				Grab = 0;
-				crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
+				//crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
 				
 				if (hoveredBeat != null)
 					hoveredBeat.GetComponent<Renderer> ().material.color = Color.white;
@@ -170,7 +194,7 @@ public class JointOrientation : MonoBehaviour
 				grabbedBeat = null;
 
 			} else {
-				crossHair.transform.localScale = new Vector3 (0.05f, 0.05f, 0.0f);
+				//crossHair.transform.localScale = new Vector3 (0.05f, 0.05f, 0.0f);
 
 				RaycastHit hit;
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
@@ -192,12 +216,16 @@ public class JointOrientation : MonoBehaviour
 				}
 			}	
 		} else {
+
 			if (thalmicMyo.pose == Pose.FingersSpread) {
+				//set grab trigger for crossHair
+				crossHair.SetTrigger("Release");
+
 				Grab = 0;
-				crossHair.GetComponent<Renderer> ().material.color = Color.black;
+				//crossHair.GetComponent<Renderer> ().material.color = Color.black;
 			}
 			else {
-				crossHair.GetComponent<Renderer> ().material.color = Color.white;
+				//crossHair.GetComponent<Renderer> ().material.color = Color.white;
 			}
 		}
 
