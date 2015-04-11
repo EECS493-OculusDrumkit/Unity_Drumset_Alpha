@@ -24,13 +24,19 @@ public class JointOrientation : MonoBehaviour
 	public GameObject crossHair;
 	public GameObject DrumStick;
 	public GameObject DrumBeat;
-	private bool Grab;
+
+	// 0 equal open hand
+	// 1 equals fist and item is grabbed
+	// 2 equals fist but nothing grabbed
+	private int Grab;
 	private GameObject hoveredBeat;
+	private LayerMask BeatLayermask;
+	private LayerMask InstramentLayermask;
 
 	void Start () {
 		// Begin with drumstick
-		Grab = false;
-		crossHair.GetComponent<Renderer> ().enabled = false;
+		Grab = 0;
+		DrumStick.GetComponent<Renderer> ().enabled = false;
 
 		// Create virtual drumloop
 		for (int i = 0; i < LoopNumber; i++) 
@@ -42,8 +48,11 @@ public class JointOrientation : MonoBehaviour
 
 			GameObject clone = Instantiate(DrumBeat, BeatPosition, BeatRotation) as GameObject;
 			}
-	}
 
+	 	BeatLayermask = 1 << LayerMask.NameToLayer ("Beat"); // only check for collisions with beats
+	 	InstramentLayermask = 1 << LayerMask.NameToLayer ("Instrament"); // only check for collisions with beats
+	}
+	
 
 
     // A rotation that compensates for the Myo armband's orientation parallel to the ground, i.e. yaw.
@@ -86,46 +95,74 @@ public class JointOrientation : MonoBehaviour
         }
 
 // Grab event. For Max 
-		if (Grab == false) {
+		// Object hasn't been grabbed
+		if (Grab == 0) {
 			if (thalmicMyo.pose == Pose.Fist) {
-				DrumStick.GetComponent<Renderer> ().enabled = false;
-				crossHair.GetComponent<Renderer> ().enabled = true;
-				Grab = true;
-			}
-		} else {
-			if (thalmicMyo.pose == Pose.FingersSpread) {
-				DrumStick.GetComponent<Renderer> ().enabled = true;
-				crossHair.GetComponent<Renderer> ().enabled = false;
-				Grab = false;
+				RaycastHit hit;
+				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
+				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value | InstramentLayermask.value)) {
+					Grab = 1;
+				} else {
+					Grab = 2;
+				}
+			} else {
+				RaycastHit hit;
+				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
+				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value | InstramentLayermask.value)) {
+					crossHair.GetComponent<Renderer> ().material.color = Color.yellow;
+					if (crossHair.transform.localScale.x > 0.1f)
+						crossHair.transform.localScale = new Vector3 (0.01f, 0.01f, 0.0f);
+					else
+						crossHair.transform.localScale = new Vector3 (crossHair.transform.localScale.x + 0.002f, crossHair.transform.localScale.y + 0.002f, 0.0f);
 
-				if (hoveredBeat!= null)
-					hoveredBeat.GetComponent<Renderer>().material.color = Color.white;
+				} else {
+					crossHair.GetComponent<Renderer> ().material.color = Color.black;
+					crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
+				}
+			}
+			//object has been grabbed
+		} else if (Grab == 1) {
+			if (thalmicMyo.pose == Pose.FingersSpread) {
+				//DrumStick.GetComponent<Renderer> ().enabled = true;
+				//crossHair.GetComponent<Renderer> ().enabled = false;
+				Grab = 0;
+				crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
+				
+				if (hoveredBeat != null)
+					hoveredBeat.GetComponent<Renderer> ().material.color = Color.white;
 
 // use 4 raycasts to check top, bottom, left, right
 // so don't have double tap problem, require people to double tap both fingers
 				RaycastHit hit;
-				Vector3 fwd = crossHair.transform.TransformDirection(Vector3.forward);
-				if (Physics.Raycast(transform.position, fwd, out hit, 15)){
-					hoveredBeat = hit.collider.gameObject.GetComponent<Collider>().gameObject;
-					hoveredBeat.GetComponent<Renderer>().material.color = Color.red;
+				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
+				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
+					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
+					hoveredBeat.GetComponent<Renderer> ().material.color = Color.red;
 				}
 				hoveredBeat = null;
-			}
-			else{
+			} else {
+				crossHair.transform.localScale = new Vector3 (0.05f, 0.05f, 0.0f);
+
 				RaycastHit hit;
-				Vector3 fwd = crossHair.transform.TransformDirection(Vector3.forward);
-				if (Physics.Raycast(transform.position, fwd, out hit, 15)){
-					hoveredBeat = hit.collider.gameObject.GetComponent<Collider>().gameObject;
-					hoveredBeat.GetComponent<Renderer>().material.color = Color.yellow;
-					}
-				else{
-					if (hoveredBeat!= null){
-						hoveredBeat.GetComponent<Renderer>().material.color = Color.white;
+				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
+				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
+					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
+					hoveredBeat.GetComponent<Renderer> ().material.color = Color.yellow;
+				} else {
+					if (hoveredBeat != null) {
+						hoveredBeat.GetComponent<Renderer> ().material.color = Color.white;
 						hoveredBeat = null;
 					}
 				}
+			}	
+		} else {
+			if (thalmicMyo.pose == Pose.FingersSpread) {
+				Grab = 0;
+				crossHair.GetComponent<Renderer> ().material.color = Color.black;
 			}
-			
+			else {
+				crossHair.GetComponent<Renderer> ().material.color = Color.white;
+			}
 		}
 
 //rotate drum stick
