@@ -46,11 +46,15 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\C#\JointOrientation.cs" />
      <Compile Include="Assets\C#\Shoot.cs" />
+<<<<<<< HEAD
      <Compile Include="Assets\C#\Timer.cs" />
+=======
+     <Compile Include="Assets\C#\beat.cs" />
+>>>>>>> ac866c42fc0314b9b2179c86c16397a197d3625e
      <Compile Include="Assets\C#\target.cs" />
      <Compile Include="Assets\Myo Samples\Scripts\ColorBoxByPose.cs" />
-     <Compile Include="Assets\Myo Samples\Scripts\JointOrientation.cs" />
      <Compile Include="Assets\Myo Samples\Scripts\SampleSceneGUI.cs" />
      <Compile Include="Assets\Myo\Scripts\Myo.NET\EventTypes.cs" />
      <Compile Include="Assets\Myo\Scripts\Myo.NET\Hub.cs" />
