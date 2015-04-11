@@ -30,10 +30,12 @@ public class JointOrientation : MonoBehaviour
 	// 2 equals fist but nothing grabbed
 	private int Grab;
 	private GameObject hoveredBeat;
+	private GameObject grabbedBeat;
 	private LayerMask BeatLayermask;
 	private LayerMask InstramentLayermask;
 
-	public Beat BeatScript;
+	private beat BeatScript;
+	private beat grabbedScript;
 
 	void Start () {
 		// Begin with drumstick
@@ -102,24 +104,44 @@ public class JointOrientation : MonoBehaviour
 			if (thalmicMyo.pose == Pose.Fist) {
 				RaycastHit hit;
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
-				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value | InstramentLayermask.value)) {
+				if (Physics.Raycast (transform.position, fwd, out hit, 15, InstramentLayermask.value)) {
+					grabbedBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
 					Grab = 1;
+				}
+				else if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)){
+					grabbedBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
+					grabbedScript = (beat) grabbedBeat.GetComponent(typeof(beat));
+					if (grabbedScript.occupied == true){
+						Grab = 1;
+						grabbedScript.occupied = false;
+					}else{
+						Grab = 2;
+					}
 				} else {
 					Grab = 2;
 				}
 			} else {
 				RaycastHit hit;
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
-				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value | InstramentLayermask.value)) {
+				if (Physics.Raycast (transform.position, fwd, out hit, 15, InstramentLayermask.value)) {
 					crossHair.GetComponent<Renderer> ().material.color = Color.yellow;
 					if (crossHair.transform.localScale.x > 0.1f)
 						crossHair.transform.localScale = new Vector3 (0.01f, 0.01f, 0.0f);
 					else
 						crossHair.transform.localScale = new Vector3 (crossHair.transform.localScale.x + 0.002f, crossHair.transform.localScale.y + 0.002f, 0.0f);
-
+				} else if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
 					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
-					BeatScript = hoveredBeat.GetComponent<"Beat"> as Beat;
-
+					BeatScript = (beat) hoveredBeat.GetComponent(typeof(beat));
+					if (BeatScript.occupied == true){
+						crossHair.GetComponent<Renderer> ().material.color = Color.yellow;
+						if (crossHair.transform.localScale.x > 0.1f)
+							crossHair.transform.localScale = new Vector3 (0.01f, 0.01f, 0.0f);
+						else
+							crossHair.transform.localScale = new Vector3 (crossHair.transform.localScale.x + 0.002f, crossHair.transform.localScale.y + 0.002f, 0.0f);
+					} else {
+						crossHair.GetComponent<Renderer> ().material.color = Color.black;
+						crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
+					}
 				} else {
 					crossHair.GetComponent<Renderer> ().material.color = Color.black;
 					crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
@@ -136,26 +158,35 @@ public class JointOrientation : MonoBehaviour
 				if (hoveredBeat != null)
 					hoveredBeat.GetComponent<Renderer> ().material.color = Color.white;
 
-// use 4 raycasts to check top, bottom, left, right
-// so don't have double tap problem, require people to double tap both fingers
 				RaycastHit hit;
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
 				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
 					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
 					hoveredBeat.GetComponent<Renderer> ().material.color = Color.red;
+					BeatScript = (beat) hoveredBeat.GetComponent(typeof(beat));
+					BeatScript.occupied = true;
 				}
 				hoveredBeat = null;
+				grabbedBeat = null;
+
 			} else {
 				crossHair.transform.localScale = new Vector3 (0.05f, 0.05f, 0.0f);
 
 				RaycastHit hit;
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
-				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
+				if (Physics.Raycast (transform.position, fwd, out hit, 15, InstramentLayermask.value)) {
+				} else if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
 					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
 					hoveredBeat.GetComponent<Renderer> ().material.color = Color.yellow;
 				} else {
 					if (hoveredBeat != null) {
-						hoveredBeat.GetComponent<Renderer> ().material.color = Color.white;
+						BeatScript = (beat) hoveredBeat.GetComponent(typeof(beat));
+						if (BeatScript.occupied == false){
+							hoveredBeat.GetComponent<Renderer> ().material.color = Color.white;
+						}
+						else{
+							hoveredBeat.GetComponent<Renderer> ().material.color = Color.red;
+						}
 						hoveredBeat = null;
 					}
 				}
