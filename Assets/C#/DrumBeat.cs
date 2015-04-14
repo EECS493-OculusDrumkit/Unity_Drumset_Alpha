@@ -84,7 +84,7 @@ namespace BeatsByDre
 
 		public enum BeatState 
 		{
-			Empty, Hovered, Occupied
+			Empty, Hovered, Occupied, Active
 		}
 	}
 }
