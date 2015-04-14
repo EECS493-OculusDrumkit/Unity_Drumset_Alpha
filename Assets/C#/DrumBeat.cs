@@ -14,6 +14,9 @@ namespace BeatsByDre
 		public Material OccupiedMaterial;
 		public Material ActiveMaterial;
 
+		private bool Playing;
+		private float DurationRemaining;
+
 		// TODO: I'm not sure how we're representing the Mya models yet
 		// public Model Image { get; set; }
 		// private because it will be changed on state change and state change only
@@ -45,12 +48,26 @@ namespace BeatsByDre
 
 		// Update is called once per frame
 		void Update () {
+			//PLAY STATE
+			//check to see if the Beat is playing, and should be stopped
+			if (Playing){
+			    DurationRemaining -= Time.deltaTime;
+			    if (DurationRemaining <= 0) {
+					Playing = false;
+					DurationRemaining = 0;
+					this.State = BeatState.Occupied;
+				}
+			}
+
 		}
-		
-		public void Play()
+
+
+		public void Play(float duration)
 		{
 			if (HasInstrument())
 			{
+				Playing = true;
+				DurationRemaining = duration;
 				DrumMachine.GetInstance().Play(Instrument, DurationMs, Velocity);
 			}
 		}
