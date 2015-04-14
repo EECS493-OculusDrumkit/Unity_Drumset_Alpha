@@ -36,7 +36,7 @@ public class Timer : MonoBehaviour {
 //		playHead = Instantiate (PlayHead, timerPosition, timerRotation) as GameObject;
 //		playHead.transform.parent = transform;
 
-		beatsByDre = new GameObject[16];
+		beatsByDre = new GameObject[divisions];
 
 		for (int i = 0; i < divisions; i++) 
 		{
@@ -57,7 +57,7 @@ public class Timer : MonoBehaviour {
 		float secondsPerRotation = beatsPerSecond / 4;
 		float degreesPerSecond = secondsPerRotation * 360;
 
-		float secondsPerDevision = secondsPerRotation / 16;
+		float secondsPerDevision = secondsPerRotation / divisions;
 
 		if (time == 0) {
 			DrumBeat beat = (DrumBeat)beatsByDre[curDivision].GetComponent(typeof(DrumBeat));
