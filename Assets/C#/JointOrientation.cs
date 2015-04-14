@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using BeatsByDre;
 
 using LockingPolicy = Thalmic.Myo.LockingPolicy;
 using Pose = Thalmic.Myo.Pose;
@@ -23,7 +24,6 @@ public class JointOrientation : MonoBehaviour
 	public Transform camera;
 	//public GameObject crossHair;
 	public GameObject DrumStick;
-	public GameObject DrumBeat;
 
 	// 0 equal open hand
 	// 1 equals fist and item is grabbed
@@ -34,8 +34,8 @@ public class JointOrientation : MonoBehaviour
 	private LayerMask BeatLayermask;
 	private LayerMask InstramentLayermask;
 
-	private beat BeatScript;
-	private beat grabbedScript;
+	private DrumBeat BeatScript;
+	private DrumBeat grabbedScript;
 
 	//Handle for Crosshair Animator
 	public Animator crossHair;
@@ -44,17 +44,6 @@ public class JointOrientation : MonoBehaviour
 		// Begin with drumstick
 		Grab = 0;
 		DrumStick.GetComponent<Renderer> ().enabled = false;
-
-		// Create virtual drumloop
-		for (int i = 0; i < LoopNumber; i++) 
-			{
-			float AngleDegrees = i * (360/LoopNumber);
-			float AngleRadians = Mathf.Deg2Rad * AngleDegrees;
-			Vector3 BeatPosition = new Vector3(Mathf.Sin(AngleRadians) * LoopRadius, LoopHeight, Mathf.Cos(AngleRadians) * LoopRadius);
-			Quaternion BeatRotation =  Quaternion.Euler(new Vector3(0, AngleDegrees, 0));
-
-			GameObject clone = Instantiate(DrumBeat, BeatPosition, BeatRotation) as GameObject;
-			}
 
 	 	BeatLayermask = 1 << LayerMask.NameToLayer ("Beat"); // only check for collisions with beats
 	 	InstramentLayermask = 1 << LayerMask.NameToLayer ("Instrament"); // only check for collisions with beats
@@ -116,11 +105,14 @@ public class JointOrientation : MonoBehaviour
 					Grab = 1;
 				}
 				else if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)){
+					// Get the beat that is being raycast
 					grabbedBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
-					grabbedScript = (beat) grabbedBeat.GetComponent(typeof(beat));
-					if (grabbedScript.occupied == true){
+					// get the script of that beat
+					grabbedScript = (DrumBeat) grabbedBeat.GetComponent(typeof(DrumBeat));
+					// get whether the beat is occupied
+					if (grabbedScript.HasInstrument()){
 						Grab = 1;
-						grabbedScript.occupied = false;
+						grabbedScript.Clear();
 					}else{
 						Grab = 2;
 					}
@@ -142,8 +134,8 @@ public class JointOrientation : MonoBehaviour
 					*/
 				} else if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
 					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
-					BeatScript = (beat) hoveredBeat.GetComponent(typeof(beat));
-					if (BeatScript.occupied == true){
+					BeatScript = (DrumBeat) hoveredBeat.GetComponent(typeof(DrumBeat));
+					if (BeatScript.HasInstrument()){
 						// go to hover
 						crossHair.SetBool ("overObject", true);
 						/*
@@ -187,8 +179,8 @@ public class JointOrientation : MonoBehaviour
 				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
 					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
 					hoveredBeat.GetComponent<Renderer> ().material.color = Color.red;
-					BeatScript = (beat) hoveredBeat.GetComponent(typeof(beat));
-					BeatScript.occupied = true;
+					BeatScript = (DrumBeat) hoveredBeat.GetComponent(typeof(DrumBeat));
+					BeatScript.Instrument = DrumBeat.InstrumentType.Cowbell;
 				}
 				hoveredBeat = null;
 				grabbedBeat = null;
@@ -204,8 +196,8 @@ public class JointOrientation : MonoBehaviour
 					hoveredBeat.GetComponent<Renderer> ().material.color = Color.yellow;
 				} else {
 					if (hoveredBeat != null) {
-						BeatScript = (beat) hoveredBeat.GetComponent(typeof(beat));
-						if (BeatScript.occupied == false){
+						BeatScript = (DrumBeat) hoveredBeat.GetComponent(typeof(DrumBeat));
+						if (!BeatScript.HasInstrument()){
 							hoveredBeat.GetComponent<Renderer> ().material.color = Color.white;
 						}
 						else{

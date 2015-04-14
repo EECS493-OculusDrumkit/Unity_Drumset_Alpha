@@ -45,7 +45,7 @@ public class Timer : MonoBehaviour {
 			Quaternion BeatRotation =  Quaternion.Euler(new Vector3(0, AngleDegrees, 0));
 			
 			beatsByDre[i] = Instantiate(DrumBeat, BeatPosition, BeatRotation) as GameObject;
-			beatsByDre[i].transform.parent = transform;
+			//beatsByDre[i].transform.parent = transform;
 		}
 
 	}
