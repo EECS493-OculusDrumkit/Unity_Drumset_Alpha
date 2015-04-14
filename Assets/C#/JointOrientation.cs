@@ -23,7 +23,6 @@ public class JointOrientation : MonoBehaviour
 	public Transform crossSphere;
 	public Transform camera;
 	//public GameObject crossHair;
-	public GameObject DrumStick;
 
 	// 0 equal open hand
 	// 1 equals fist and item is grabbed
@@ -43,7 +42,6 @@ public class JointOrientation : MonoBehaviour
 	void Start () {
 		// Begin with drumstick
 		Grab = 0;
-		DrumStick.GetComponent<Renderer> ().enabled = false;
 
 	 	BeatLayermask = 1 << LayerMask.NameToLayer ("Beat"); // only check for collisions with beats
 	 	InstramentLayermask = 1 << LayerMask.NameToLayer ("Instrament"); // only check for collisions with beats
@@ -171,15 +169,19 @@ public class JointOrientation : MonoBehaviour
 				Grab = 0;
 				//crossHair.transform.localScale = new Vector3 (0.1f, 0.1f, 0.0f);
 				
-				if (hoveredBeat != null)
-					hoveredBeat.GetComponent<Renderer> ().material.color = Color.white;
+				if (hoveredBeat != null) {
+					BeatScript = (DrumBeat)hoveredBeat.GetComponent (typeof(DrumBeat));
+					BeatScript.State = DrumBeat.BeatState.Empty;
+				}
+
+
 
 				RaycastHit hit;
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
 				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
 					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
-					hoveredBeat.GetComponent<Renderer> ().material.color = Color.red;
 					BeatScript = (DrumBeat) hoveredBeat.GetComponent(typeof(DrumBeat));
+					BeatScript.State = DrumBeat.BeatState.Occupied;
 					BeatScript.Instrument = DrumBeat.InstrumentType.Cowbell;
 				}
 				hoveredBeat = null;
@@ -193,15 +195,18 @@ public class JointOrientation : MonoBehaviour
 				if (Physics.Raycast (transform.position, fwd, out hit, 15, InstramentLayermask.value)) {
 				} else if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
 					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
-					hoveredBeat.GetComponent<Renderer> ().material.color = Color.yellow;
+					BeatScript = (DrumBeat) hoveredBeat.GetComponent(typeof(DrumBeat));
+					BeatScript.State = DrumBeat.BeatState.Hovered;
 				} else {
 					if (hoveredBeat != null) {
 						BeatScript = (DrumBeat) hoveredBeat.GetComponent(typeof(DrumBeat));
 						if (!BeatScript.HasInstrument()){
-							hoveredBeat.GetComponent<Renderer> ().material.color = Color.white;
+							print ("empty");
+							BeatScript.State = DrumBeat.BeatState.Empty;
 						}
 						else{
-							hoveredBeat.GetComponent<Renderer> ().material.color = Color.red;
+							BeatScript.State = DrumBeat.BeatState.Occupied;
+							print ("occupied");
 						}
 						hoveredBeat = null;
 					}

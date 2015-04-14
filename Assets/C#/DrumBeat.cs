@@ -28,7 +28,7 @@ namespace BeatsByDre
 			set 
 			{
 				this._state = value;
-//				SetObjectMaterial(GetMaterialFromState(this._state));
+				SetObjectMaterial(GetMaterialFromState(this._state));
 			}
 		}
 		public InstrumentType Instrument { get; set; }
@@ -90,7 +90,7 @@ namespace BeatsByDre
 		public void Clear()
 		{
 			State = BeatState.Empty;
-			Instrument = InstrumentType.BassDrum;
+			Instrument = InstrumentType.None;
 			DurationMs = 100;
 			Velocity = 127;
 		}
