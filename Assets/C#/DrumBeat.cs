@@ -14,8 +14,8 @@ namespace BeatsByDre
 		public Material OccupiedMaterial;
 		public Material ActiveMaterial;
 
-		private bool Playing;
-		private float DurationRemaining;
+		private bool _playing;
+		private float _durationRemaining;
 
 		// TODO: I'm not sure how we're representing the Mya models yet
 		// public Model Image { get; set; }
@@ -27,17 +27,10 @@ namespace BeatsByDre
 			set 
 			{
 				this._state = value;
-//				SetObjectColor(GetColorFromState(this._state));
+				SetObjectMaterial(GetMaterialFromState(this._state));
 			}
 		}
 		public InstrumentType Instrument { get; set; }
-
-//		public DrumBeat(InstrumentType beatType, int durationMs, int velocity = 127)
-//		{
-//			Instrument = beatType;
-//			DurationMs = durationMs;
-//			Velocity = velocity;
-//		}
 
 		void Start () {
 			State = BeatState.Empty;
@@ -50,43 +43,45 @@ namespace BeatsByDre
 		void Update () {
 			//PLAY STATE
 			//check to see if the Beat is playing, and should be stopped
-			if (Playing){
-			    DurationRemaining -= Time.deltaTime;
-			    if (DurationRemaining <= 0) {
-					Playing = false;
-					DurationRemaining = 0;
+			if (_playing){
+				// Reduce the amount of time left to play
+				_durationRemaining -= Time.deltaTime;
+				if (_durationRemaining <= 0) {
+					_playing = false;
+					_durationRemaining = 0;
 					this.State = BeatState.Occupied;
 				}
 			}
-
 		}
-
 
 		public void Play(float duration)
 		{
 			if (HasInstrument())
 			{
-				Playing = true;
-				DurationRemaining = duration;
+				DurationMs = (int)(duration * 1000);
+				_playing = true;
+				_durationRemaining = duration;
 				DrumMachine.GetInstance().Play(Instrument, DurationMs, Velocity);
 			}
 		}
 
-//		private Color GetColorFromState(BeatState state) {
-//			switch (state) {
-//			case BeatState.Empty:
-//				break;
-//			case BeatState.Hovered:
-//				break;
-//			case BeatState.Occupied:
-//				break;
-//			default:
-//				throw new NotSupportedException("Invalid beat state");
-//			}
-//		}
+		private Material GetMaterialFromState(BeatState state) {
+			switch (state) {
+			case BeatState.Empty:
+				return EmptyMaterial;
+			case BeatState.Hovered:
+				return HoverMaterial;
+			case BeatState.Occupied:
+				return OccupiedMaterial;
+			case BeatState.Active:
+				return ActiveMaterial;
+			default:
+				throw new NotSupportedException("Invalid beat state");
+			}
+		}
 
-		private void SetObjectColor(Color color) {
-			// TODO
+		private void SetObjectMaterial(Material material) {
+			this.GetComponent<Renderer> ().material = material;
 		}
 
 		public bool HasInstrument()
