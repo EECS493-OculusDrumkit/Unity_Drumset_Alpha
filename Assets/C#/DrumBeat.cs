@@ -9,6 +9,11 @@ namespace BeatsByDre
 	{
 		public int Velocity { get; set; }
 		public int DurationMs { get; set; }
+		public Material EmptyMaterial;
+		public Material HoverMaterial;
+		public Material OccupiedMaterial;
+		public Material ActiveMaterial;
+
 		// TODO: I'm not sure how we're representing the Mya models yet
 		// public Model Image { get; set; }
 		// private because it will be changed on state change and state change only
