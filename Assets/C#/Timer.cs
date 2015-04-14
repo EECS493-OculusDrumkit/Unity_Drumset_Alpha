@@ -59,7 +59,7 @@ public class Timer : MonoBehaviour {
 		float secondsPerDevision = secondsPerRotation / 16;
 
 		if (time == 0) {
-			//beatsByDre[curSection].play
+//			beatsByDre [curSection].Play(secondsPerDevision);
 			curDivision++;
 			if (curDivision >= divisions){
 				curDivision = 0;

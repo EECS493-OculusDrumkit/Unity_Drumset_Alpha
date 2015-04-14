@@ -19,6 +19,7 @@ namespace BeatsByDre
 
 		// TODO: I'm not sure how we're representing the Mya models yet
 		// public Model Image { get; set; }
+
 		// private because it will be changed on state change and state change only
 		private BeatState _state;
 		public BeatState State { 
@@ -33,32 +34,29 @@ namespace BeatsByDre
 		public InstrumentType Instrument { get; set; }
 
 		void Start () {
-			State = BeatState.Empty;
-			Instrument = InstrumentType.None;
-			DurationMs = 0;
-			Velocity = 127;
+			Clear ();
 		}
 
 		// Update is called once per frame
 		void Update () {
 			//PLAY STATE
-			//check to see if the Beat is playing, and should be stopped
+			//check to see if the Beat is playing, and if should be stopped
 			if (_playing){
 				// Reduce the amount of time left to play
 				_durationRemaining -= Time.deltaTime;
 				if (_durationRemaining <= 0) {
 					_playing = false;
 					_durationRemaining = 0;
-					this.State = BeatState.Occupied;
+					State = BeatState.Occupied;
 				}
 			}
 		}
 
-		public void Play(float duration)
+		public void Play(float durationSeconds)
 		{
 			if (HasInstrument())
 			{
-				DurationMs = (int)(duration * 1000);
+				DurationMs = (int)(durationSeconds * 1000);
 				_playing = true;
 				_durationRemaining = duration;
 				DrumMachine.GetInstance().Play(Instrument, DurationMs, Velocity);
@@ -91,7 +89,10 @@ namespace BeatsByDre
 		
 		public void Clear()
 		{
+			State = BeatState.Empty;
 			Instrument = InstrumentType.None;
+			DurationMs = 0;
+			Velocity = 127;
 		}
 		
 		public enum InstrumentType
