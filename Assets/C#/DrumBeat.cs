@@ -28,7 +28,7 @@ namespace BeatsByDre
 			set 
 			{
 				this._state = value;
-				SetObjectMaterial(GetMaterialFromState(this._state));
+//				SetObjectMaterial(GetMaterialFromState(this._state));
 			}
 		}
 		public InstrumentType Instrument { get; set; }
@@ -58,7 +58,7 @@ namespace BeatsByDre
 			{
 				DurationMs = (int)(durationSeconds * 1000);
 				_playing = true;
-				_durationRemaining = duration;
+				_durationRemaining = durationSeconds;
 				DrumMachine.GetInstance().Play(Instrument, DurationMs, Velocity);
 			}
 		}
@@ -91,7 +91,7 @@ namespace BeatsByDre
 		{
 			State = BeatState.Empty;
 			Instrument = InstrumentType.None;
-			DurationMs = 0;
+			DurationMs = 100;
 			Velocity = 127;
 		}
 		
