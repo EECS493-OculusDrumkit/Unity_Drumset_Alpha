@@ -12,7 +12,8 @@ namespace BeatsByDre
 		
 		private DrumMachine()
 		{
-			_drumKit = new DrumKit("http://drumkit.ngrok.com");
+//			_drumKit = new DrumKit("http://drumkit.ngrok.com");
+			_drumKit = new DrumKit("http://localhost:5000");
 		}
 		
 		// Singleton getInstance operator

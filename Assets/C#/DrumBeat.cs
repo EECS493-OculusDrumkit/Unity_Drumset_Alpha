@@ -36,6 +36,11 @@ namespace BeatsByDre
 		void Start () {
 			Clear ();
 		}
+			
+		// Grab the beat
+		void OnTriggerEnter(Collider other){
+			Play ();
+		}
 
 		// Update is called once per frame
 		void Update () {
@@ -59,7 +64,18 @@ namespace BeatsByDre
 				DurationMs = (int)(durationSeconds * 1000);
 				_playing = true;
 				_durationRemaining = durationSeconds;
-//				DrumMachine.GetInstance().Play(Instrument, DurationMs, Velocity);
+				DrumMachine.GetInstance().Play(Instrument, DurationMs, Velocity);
+				State = BeatState.Active;
+			}
+		}
+
+		public void Play()
+		{
+			if (HasInstrument())
+			{
+				_playing = true;
+				_durationRemaining = DurationMs / 1000.0f;
+				DrumMachine.GetInstance().Play(Instrument, DurationMs, Velocity);
 				State = BeatState.Active;
 			}
 		}
@@ -93,7 +109,7 @@ namespace BeatsByDre
 			State = BeatState.Empty;
 //			Instrument = InstrumentType.None;
 			Instrument = AssignRandomInstrument((new System.Random()).Next(0,6));
-			DurationMs = 100;
+			DurationMs = 500;
 			Velocity = 127;
 		}
 

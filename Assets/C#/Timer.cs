@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Threading;
 using BeatsByDre;
 
 public class Timer : MonoBehaviour {
@@ -18,6 +19,11 @@ public class Timer : MonoBehaviour {
 	private GameObject playHead;
 	private GameObject [] beatsByDre;
 
+	// State variables
+	float beatsPerSecond;
+	float secondsPerRotation;
+	float degreesPerSecond;
+	float secondsPerDivision;
 
 	void Start () {
 
@@ -25,6 +31,11 @@ public class Timer : MonoBehaviour {
 //		Mesh mesh = GetComponent<MeshFilter> ().mesh;
 //		Renderer rend = GetComponent<Renderer> ();
 //		float loopDiam = rend.bounds.size.x;
+
+		beatsPerSecond = BPM / 60;
+		secondsPerRotation = divisions / beatsPerSecond;
+		degreesPerSecond = 360.0f / secondsPerRotation;
+		secondsPerDivision = 1 / beatsPerSecond;
 
 		Vector3 timerPosition =  new Vector3 (0, 0, 0);
 		Quaternion timerRotation = Quaternion.Euler(new Vector3(0, 0, 0));
@@ -43,33 +54,33 @@ public class Timer : MonoBehaviour {
 			Quaternion BeatRotation =  Quaternion.Euler(new Vector3(0, AngleDegrees, 0));
 			
 			beatsByDre[i] = Instantiate(DrumBeat, BeatPosition, BeatRotation) as GameObject;
+			((DrumBeat)beatsByDre [i].GetComponent (typeof(DrumBeat))).DurationMs = (int)(secondsPerDivision * 1000);
 		}
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		float beatsPerSecond = BPM / 60;
-		float secondsPerRotation = divisions / beatsPerSecond;
-		float degreesPerSecond = 360.0f / secondsPerRotation;
-		float secondsPerDivision = 1 / beatsPerSecond;
+		
 
-		if (done) {
-			DrumBeat beat = (DrumBeat)beatsByDre[curDivision].GetComponent(typeof(DrumBeat));
-			beat.Play(secondsPerDivision);
-			curDivision++;
-			if (curDivision >= divisions){
-				curDivision = 0;
-			}
-		}
-
-		done = false;
-		time += Time.deltaTime;
-
-		if (time >= secondsPerDivision) {
-			time = 0;
-			done = true;
-		}
+//		if (done) {
+//			DrumBeat beat = (DrumBeat)beatsByDre[curDivision].GetComponent(typeof(DrumBeat));
+//			Thread playThread = new Thread (() => beat.Play (secondsPerDivision));
+//			playThread.Start ();
+//			beat.Play(secondsPerDivision);
+//			curDivision++;
+//			if (curDivision >= divisions){
+//				curDivision = 0;
+//			}
+//		}
+//
+//		done = false;
+//		time += Time.deltaTime;
+//
+//		if (time >= secondsPerDivision) {
+//			time = 0;
+//			done = true;
+//		}
 
 		playHead.transform.Rotate (Vector3.up * degreesPerSecond * Time.deltaTime, Space.Self);
 	}
