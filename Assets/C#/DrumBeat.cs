@@ -28,7 +28,7 @@ namespace BeatsByDre
 			set 
 			{
 				this._state = value;
-//				SetObjectMaterial(GetMaterialFromState(this._state));
+				SetObjectMaterial(GetMaterialFromState(this._state));
 			}
 		}
 		public InstrumentType Instrument { get; set; }
