@@ -12,17 +12,19 @@ public class Timer : MonoBehaviour {
 	public GameObject PlayHead;
 
 	private float time = 0.0f;
+	private bool done = true;
 	private int curDivision = 0;
-	private int signature = 4;
+	private float signature = 4.0f;
 	private GameObject playHead;
 	private GameObject [] beatsByDre;
 
 
 	void Start () {
 
-		Mesh mesh = GetComponent<MeshFilter> ().mesh;
-		Renderer rend = GetComponent<Renderer> ();
-		float loopDiam = rend.bounds.size.x;
+		// Unused
+//		Mesh mesh = GetComponent<MeshFilter> ().mesh;
+//		Renderer rend = GetComponent<Renderer> ();
+//		float loopDiam = rend.bounds.size.x;
 
 		Vector3 timerPosition =  new Vector3 (0, 0, 0);
 		Quaternion timerRotation = Quaternion.Euler(new Vector3(0, 0, 0));
@@ -31,22 +33,16 @@ public class Timer : MonoBehaviour {
 		playHead.transform.parent = transform;
 		playHead.transform.localScale = new Vector3 (1, 1, 1);
 
-		
-
-//		playHead = Instantiate (PlayHead, timerPosition, timerRotation) as GameObject;
-//		playHead.transform.parent = transform;
-
 		beatsByDre = new GameObject[divisions];
 
 		for (int i = 0; i < divisions; i++) 
 		{
-			float AngleDegrees = i * (360/divisions);
+			float AngleDegrees = i * (360.0f/divisions);
 			float AngleRadians = Mathf.Deg2Rad * AngleDegrees;
 			Vector3 BeatPosition = new Vector3(Mathf.Sin(AngleRadians) * LoopRadius, loopHover, Mathf.Cos(AngleRadians) * LoopRadius);
 			Quaternion BeatRotation =  Quaternion.Euler(new Vector3(0, AngleDegrees, 0));
 			
 			beatsByDre[i] = Instantiate(DrumBeat, BeatPosition, BeatRotation) as GameObject;
-			//beatsByDre[i].transform.parent = transform;
 		}
 
 	}
@@ -54,24 +50,25 @@ public class Timer : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		float beatsPerSecond = BPM / 60;
-		float secondsPerRotation = beatsPerSecond / 4;
-		float degreesPerSecond = secondsPerRotation * 360;
+		float secondsPerRotation = divisions / beatsPerSecond;
+		float degreesPerSecond = 360.0f / secondsPerRotation;
+		float secondsPerDivision = 1 / beatsPerSecond;
 
-		float secondsPerDevision = secondsPerRotation / divisions;
-
-		if (time == 0) {
+		if (done) {
 			DrumBeat beat = (DrumBeat)beatsByDre[curDivision].GetComponent(typeof(DrumBeat));
-			beat.Play(secondsPerDevision);
+			beat.Play(secondsPerDivision);
 			curDivision++;
 			if (curDivision >= divisions){
 				curDivision = 0;
 			}
 		}
 
+		done = false;
 		time += Time.deltaTime;
 
-		if (time >= secondsPerDevision) {
+		if (time >= secondsPerDivision) {
 			time = 0;
+			done = true;
 		}
 
 		playHead.transform.Rotate (Vector3.up * degreesPerSecond * Time.deltaTime, Space.Self);

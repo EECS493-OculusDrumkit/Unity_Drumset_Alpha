@@ -59,7 +59,8 @@ namespace BeatsByDre
 				DurationMs = (int)(durationSeconds * 1000);
 				_playing = true;
 				_durationRemaining = durationSeconds;
-				DrumMachine.GetInstance().Play(Instrument, DurationMs, Velocity);
+//				DrumMachine.GetInstance().Play(Instrument, DurationMs, Velocity);
+				State = BeatState.Active;
 			}
 		}
 
@@ -90,11 +91,33 @@ namespace BeatsByDre
 		public void Clear()
 		{
 			State = BeatState.Empty;
-			Instrument = InstrumentType.None;
+//			Instrument = InstrumentType.None;
+			Instrument = AssignRandomInstrument((new System.Random()).Next(0,6));
 			DurationMs = 100;
 			Velocity = 127;
 		}
-		
+
+		private InstrumentType AssignRandomInstrument(int instrument) {
+			switch (instrument) {
+			case 0:
+				return InstrumentType.None;
+			case 1:
+				return InstrumentType.BassDrum;
+			case 2:
+				return InstrumentType.SnareDrum;
+			case 3:
+				return InstrumentType.TomDrum;
+			case 4:
+				return InstrumentType.CrashCymbal;
+			case 5:
+				return InstrumentType.HiHatCymbal;
+			case 6:
+				return InstrumentType.Cowbell;
+			default:
+				throw new NotSupportedException("Invalid beat state");
+			}
+		}
+
 		public enum InstrumentType
 		{
 			None, BassDrum, SnareDrum, TomDrum, CrashCymbal, HiHatCymbal, Cowbell
