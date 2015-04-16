@@ -9,6 +9,9 @@ namespace BeatsByDre
 {
 	public class InstrumentCan : MonoBehaviour
 	{
+		public Material HoverMaterial;
+		public Material OccupiedMaterial;
+
 		// TODO: Maya Model
 		// private Model _model;
 		private InstrumentType _instrument;
@@ -30,14 +33,14 @@ namespace BeatsByDre
 			set 
 			{
 				_state = value;
-//				SetObjectMaterial (GetMaterialFromState (_state));
+				SetObjectMaterial (GetMaterialFromState (_state));
 			}
 
 		}
 
 		// Use this for initialization
 		void Start () {
-			Clear();
+			State = BeatState.Occupied;
 		}
 
 		// Update is called once per frame
@@ -45,7 +48,7 @@ namespace BeatsByDre
 
 		}
 
-		public void Preview()
+		public void PreviewSound()
 		{
 			if (HasInstrument())
 			{
@@ -58,23 +61,16 @@ namespace BeatsByDre
 			return !Instrument.Equals(InstrumentType.None);
 		}
 
-		public void Clear()
-		{
-			Instrument = InstrumentType.None;
+		private Material GetMaterialFromState(BeatState state) {
+			switch (state) {
+			case BeatState.Hovered:
+				return HoverMaterial;
+			case BeatState.Occupied:
+				return OccupiedMaterial;
+			default:
+				throw new NotSupportedException("Invalid beat state");
+			}
 		}
-
-//		private Material GetMaterialFromState(BeatState state) {
-//			switch (state) {
-//			case BeatState.Empty:
-//				return EmptyMaterial;
-//			case BeatState.Hovered:
-//				return HoverMaterial;
-//			case BeatState.Occupied:
-//				return OccupiedMaterial;
-//			default:
-//				throw new NotSupportedException("Invalid beat state");
-//			}
-//		}
 
 		private void SetObjectMaterial(Material material) {
 			this.GetComponent<Renderer> ().material = material;
@@ -86,8 +82,6 @@ namespace BeatsByDre
 			// Set model in can according to instrument assigned
 			switch (instrument)
 			{
-			case InstrumentType.None:
-				break;
 			case InstrumentType.BassDrum:
 				break;
 			case InstrumentType.SnareDrum:
