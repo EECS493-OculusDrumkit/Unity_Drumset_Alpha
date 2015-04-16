@@ -104,7 +104,10 @@ public class JointOrientation : MonoBehaviour
 				if (Physics.Raycast (transform.position, fwd, out hit, 15, InstramentLayermask.value)) {
 					grabbedBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
 					// Get instrument
-					_heldInstrument = grabbedScript.Instrument;
+					var beat = (InstrumentCan)grabbedBeat.GetComponent(typeof(InstrumentCan));
+					if (beat == null)
+						print ("Cast failed");
+					_heldInstrument = beat.Instrument;
 					Grab = 1;
 				}
 				else if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)){

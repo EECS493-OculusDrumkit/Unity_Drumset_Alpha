@@ -107,8 +107,8 @@ namespace BeatsByDre
 		public void Clear()
 		{
 			State = BeatState.Empty;
-			Instrument = InstrumentType.None;
-//			Instrument = AssignRandomInstrument((new System.Random()).Next(0,6));
+//			Instrument = InstrumentType.None;
+			Instrument = AssignRandomInstrument((new System.Random()).Next(0,6));
 			DurationMs = 500;
 			Velocity = 127;
 		}
