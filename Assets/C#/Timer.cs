@@ -26,7 +26,6 @@ public class Timer : MonoBehaviour {
 	float secondsPerDivision;
 
 	void Start () {
-
 		// Unused
 //		Mesh mesh = GetComponent<MeshFilter> ().mesh;
 //		Renderer rend = GetComponent<Renderer> ();
