@@ -37,6 +37,10 @@ public class JointOrientation : MonoBehaviour
 	private DrumBeat BeatScript;
 	private DrumBeat grabbedScript;
 
+	//drum animator handler
+	private GameObject jellyHandler;
+	private bool jellyExited;
+
 	private InstrumentType _heldInstrument;
 
 	//Handle for Crosshair Animator
@@ -45,6 +49,7 @@ public class JointOrientation : MonoBehaviour
 	void Start () {
 		// Begin with drumstick
 		Grab = 0;
+		jellyExited = false;
 
 	 	BeatLayermask = 1 << LayerMask.NameToLayer ("Beat"); // only check for collisions with beats
 	 	InstramentLayermask = 1 << LayerMask.NameToLayer ("Instrament"); // only check for collisions with beats
@@ -103,10 +108,12 @@ public class JointOrientation : MonoBehaviour
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
 				if (Physics.Raycast (transform.position, fwd, out hit, 15, InstramentLayermask.value)) {
 					grabbedBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
+
+					//set drum animator thng
+					jellyHandler = grabbedBeat; 
+
 					// Get instrument
 					var beat = (InstrumentCan)grabbedBeat.GetComponent(typeof(InstrumentCan));
-					if (beat == null)
-						print ("Cast failed");
 					_heldInstrument = beat.Instrument;
 					Grab = 1;
 				}
@@ -121,6 +128,9 @@ public class JointOrientation : MonoBehaviour
 						// Get Instrument
 						_heldInstrument = grabbedScript.Instrument;
 						grabbedScript.Clear();
+
+						//set drum animator thng
+						jellyHandler = grabbedBeat; 
 					}else{
 						Grab = 2;
 					}
@@ -182,6 +192,9 @@ public class JointOrientation : MonoBehaviour
 				if (hoveredBeat != null) {
 					BeatScript = (DrumBeat)hoveredBeat.GetComponent (typeof(DrumBeat));
 					BeatScript.State = DrumBeat.BeatState.Empty;
+
+				jellyExited = false;
+				jellyHandler = null;
 				}
 
 
@@ -195,6 +208,8 @@ public class JointOrientation : MonoBehaviour
 					BeatScript.Instrument = _heldInstrument;
 					_heldInstrument = InstrumentType.None;
 				}
+
+
 				hoveredBeat = null;
 				grabbedBeat = null;
 
@@ -212,28 +227,39 @@ public class JointOrientation : MonoBehaviour
 					if (hoveredBeat != null) {
 						BeatScript = (DrumBeat) hoveredBeat.GetComponent(typeof(DrumBeat));
 						if (!BeatScript.HasInstrument()){
-							print ("empty");
 							BeatScript.State = DrumBeat.BeatState.Empty;
 						}
 						else{
 							BeatScript.State = DrumBeat.BeatState.Occupied;
-							print ("occupied");
 						}
 						hoveredBeat = null;
 					}
 				}
+
+				if (jellyExited == false){
+					if(Physics.Raycast (transform.position, fwd, out hit, 15)){
+						GameObject InstramentHover = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
+						if (jellyHandler != InstramentHover){
+							jellyExited = true;
+							jellyHandler.GetComponent<animatorHandler> ().triggerDrumAnim();
+						}
+						
+					}
+					else{
+						jellyExited= true;
+						jellyHandler.GetComponent<animatorHandler> ().triggerDrumAnim();
+					}
+				}
+
 			}	
 		} else {
 
 			if (thalmicMyo.pose == Pose.FingersSpread) {
 				//set grab trigger for crossHair
 				crossHair.SetTrigger("Release");
-
 				Grab = 0;
-				//crossHair.GetComponent<Renderer> ().material.color = Color.black;
-			}
-			else {
-				//crossHair.GetComponent<Renderer> ().material.color = Color.white;
+				jellyExited = false;
+				jellyHandler = null;
 			}
 		}
 
