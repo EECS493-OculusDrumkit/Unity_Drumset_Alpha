@@ -6,6 +6,7 @@ using LockingPolicy = Thalmic.Myo.LockingPolicy;
 using Pose = Thalmic.Myo.Pose;
 using UnlockType = Thalmic.Myo.UnlockType;
 using VibrationType = Thalmic.Myo.VibrationType;
+using InstrumentType = BeatsByDre.DrumBeat.InstrumentType;
 
 // Orient the object to match that of the Myo armband.
 // Compensate for initial yaw (orientation about the gravity vector) and roll (orientation about
@@ -35,6 +36,8 @@ public class JointOrientation : MonoBehaviour
 
 	private DrumBeat BeatScript;
 	private DrumBeat grabbedScript;
+
+	private InstrumentType _heldInstrument;
 
 	//Handle for Crosshair Animator
 	public Animator crossHair;
@@ -100,6 +103,8 @@ public class JointOrientation : MonoBehaviour
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
 				if (Physics.Raycast (transform.position, fwd, out hit, 15, InstramentLayermask.value)) {
 					grabbedBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
+					// Get instrument
+					_heldInstrument = grabbedScript.Instrument;
 					Grab = 1;
 				}
 				else if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)){
@@ -110,6 +115,8 @@ public class JointOrientation : MonoBehaviour
 					// get whether the beat is occupied
 					if (grabbedScript.HasInstrument()){
 						Grab = 1;
+						// Get Instrument
+						_heldInstrument = grabbedScript.Instrument;
 						grabbedScript.Clear();
 					}else{
 						Grab = 2;
@@ -182,7 +189,8 @@ public class JointOrientation : MonoBehaviour
 					hoveredBeat = hit.collider.gameObject.GetComponent<Collider> ().gameObject;
 					BeatScript = (DrumBeat) hoveredBeat.GetComponent(typeof(DrumBeat));
 					BeatScript.State = DrumBeat.BeatState.Occupied;
-					BeatScript.Instrument = DrumBeat.InstrumentType.Cowbell;
+					BeatScript.Instrument = _heldInstrument;
+					_heldInstrument = InstrumentType.None;
 				}
 				hoveredBeat = null;
 				grabbedBeat = null;

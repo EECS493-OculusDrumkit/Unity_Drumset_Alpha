@@ -9,6 +9,8 @@ namespace BeatsByDre
 {
 	public class InstrumentCan : MonoBehaviour
 	{
+
+		public int InstrumentIndex;
 		public Material HoverMaterial;
 		public Material OccupiedMaterial;
 
@@ -41,6 +43,29 @@ namespace BeatsByDre
 		// Use this for initialization
 		void Start () {
 			State = BeatState.Occupied;
+			Instrument = InstrumentFromIndex (InstrumentIndex);
+			// TODO
+			// Set Model
+		}
+
+		public InstrumentType InstrumentFromIndex(int index) 
+		{
+			switch (index) {
+			case 1:
+				return InstrumentType.BassDrum;
+			case 2:
+				return InstrumentType.SnareDrum;
+			case 3:
+				return InstrumentType.TomDrum;
+			case 4:
+				return InstrumentType.CrashCymbal;
+			case 5:
+				return InstrumentType.HiHatCymbal;
+			case 6:
+				return InstrumentType.Cowbell;
+			default:
+				throw new NotSupportedException("Invalid beat state");
+			}
 		}
 
 		// Update is called once per frame
