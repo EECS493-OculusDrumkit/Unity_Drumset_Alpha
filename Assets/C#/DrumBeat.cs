@@ -17,6 +17,11 @@ namespace BeatsByDre
 		private bool _playing;
 		private float _durationRemaining;
 
+		// Which beat is currently active
+		private static int _counter = 0;
+		private static int _measure = 1;
+		private static int _beat    = 1;
+
 		// TODO: I'm not sure how we're representing the Mya models yet
 		// public Model Image { get; set; }
 
@@ -35,6 +40,7 @@ namespace BeatsByDre
 
 		void Start () {
 			Clear ();
+			Timer.UpdateTicker (_measure, _beat);
 		}
 			
 		// Grab the beat
@@ -78,6 +84,15 @@ namespace BeatsByDre
 				DrumMachine.GetInstance().Play(Instrument, DurationMs, Velocity);
 				State = BeatState.Active;
 			}
+			UpdateTimer ();
+		}
+
+		private void UpdateTimer() {
+			// Make it 1-indexed not 0-indexed
+			_counter = (_counter + 1) % Timer.divisions;
+			_measure = (_counter / 4) + 1;
+			_beat = (_counter % 4) + 1;
+			Timer.UpdateTicker (_measure, _beat);
 		}
 
 		private Material GetMaterialFromState(BeatState state) {
@@ -107,8 +122,7 @@ namespace BeatsByDre
 		public void Clear()
 		{
 			State = BeatState.Empty;
-			Instrument = InstrumentType.None;
-//			Instrument = AssignRandomInstrument((new System.Random()).Next(0,6));
+			Instrument = InstrumentType.BassDrum;
 			DurationMs = 500;
 			Velocity = 127;
 		}

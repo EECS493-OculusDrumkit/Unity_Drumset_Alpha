@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Threading;
 using BeatsByDre;
@@ -6,11 +7,12 @@ using BeatsByDre;
 public class Timer : MonoBehaviour {
 	
 	public int BPM = 120;
-	public int divisions = 16;
+	public static int divisions = 16;
 	public int LoopRadius = 10;
 	public int loopHover = 4;
 	public GameObject DrumBeat;
 	public GameObject PlayHead;
+	public static GameObject BeatTicker;
 
 	private float time = 0.0f;
 	private bool done = true;
@@ -30,6 +32,7 @@ public class Timer : MonoBehaviour {
 //		Mesh mesh = GetComponent<MeshFilter> ().mesh;
 //		Renderer rend = GetComponent<Renderer> ();
 //		float loopDiam = rend.bounds.size.x;
+		BeatTicker = GameObject.Find("BeatTicker");
 
 		beatsPerSecond = BPM / 60;
 		secondsPerRotation = divisions / beatsPerSecond;
@@ -82,5 +85,9 @@ public class Timer : MonoBehaviour {
 //		}
 
 		playHead.transform.Rotate (Vector3.up * degreesPerSecond * Time.deltaTime, Space.Self);
+	}
+
+	public static void UpdateTicker(int measure, int beat) {
+		((Text)BeatTicker.GetComponent (typeof(Text))).text = measure + "." + beat;
 	}
 }
