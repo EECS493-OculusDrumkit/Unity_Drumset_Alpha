@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using BeatsByDre;
+using System;
 
 using LockingPolicy = Thalmic.Myo.LockingPolicy;
 using Pose = Thalmic.Myo.Pose;
@@ -55,7 +56,31 @@ public class JointOrientation : MonoBehaviour
 	 	InstramentLayermask = 1 << LayerMask.NameToLayer ("Instrament"); // only check for collisions with beats
 	}
 	
-
+	private void InstramentGameobject (InstrumentType instrumentEnum, GameObject Beat) {
+		pipHandler pip = Beat.transform.GetChild (0).GetComponent<pipHandler> ();
+		switch (instrumentEnum) {
+		case InstrumentType.SnareDrum:
+			pip.showSnare();
+			break;
+		case InstrumentType.Cowbell:
+			pip.showCowbell();
+			break;
+		case InstrumentType.CrashCymbal:
+			pip.showCrash();
+			break;
+		case InstrumentType.TomDrum:
+			pip.showTom();
+			break;
+		case InstrumentType.HiHatCymbal:
+			pip.showHiHat();
+			break;
+		case InstrumentType.BassDrum:
+			pip.showBass();
+			break;
+		default:
+			throw new NotSupportedException("Invalid instrament");
+		}
+	}
 
     // A rotation that compensates for the Myo armband's orientation parallel to the ground, i.e. yaw.
     // Once set, the direction the Myo armband is facing becomes "forward" within the program.
@@ -206,6 +231,8 @@ public class JointOrientation : MonoBehaviour
 					BeatScript = (DrumBeat) hoveredBeat.GetComponent(typeof(DrumBeat));
 					BeatScript.State = DrumBeat.BeatState.Occupied;
 					BeatScript.Instrument = _heldInstrument;
+
+					InstramentGameobject(_heldInstrument, hoveredBeat);
 					_heldInstrument = InstrumentType.None;
 				}
 

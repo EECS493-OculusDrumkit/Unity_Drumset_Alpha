@@ -127,7 +127,7 @@ Transform:
   - {fileID: 1101020651}
   - {fileID: 967170660}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 1
 --- !u!114 &43610615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -538,7 +538,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 493406, guid: 40e51e554d4a14d9bb9002a1636ef245, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 197910, guid: 40e51e554d4a14d9bb9002a1636ef245, type: 2}
       propertyPath: m_Name
@@ -875,7 +875,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 493406, guid: 40e51e554d4a14d9bb9002a1636ef245, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 197910, guid: 40e51e554d4a14d9bb9002a1636ef245, type: 2}
       propertyPath: m_Name
@@ -970,7 +970,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88f27ebfa71214969aa0846a9fe39095, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tickerText: 
 --- !u!1001 &854341799
 Prefab:
   m_ObjectHideFlags: 0
@@ -1008,7 +1007,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 493406, guid: 40e51e554d4a14d9bb9002a1636ef245, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 197910, guid: 40e51e554d4a14d9bb9002a1636ef245, type: 2}
       propertyPath: m_Name
@@ -1156,7 +1155,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 493406, guid: 40e51e554d4a14d9bb9002a1636ef245, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 10837042, guid: 40e51e554d4a14d9bb9002a1636ef245, type: 2}
       propertyPath: m_BounceIntensity
@@ -1287,7 +1286,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 863250160b56e46dbb2d227833b7338a, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 863250160b56e46dbb2d227833b7338a, type: 2}
@@ -1825,7 +1824,7 @@ Transform:
   m_LocalScale: {x: 18.6766453, y: 4.94512558, z: 18.6766472}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
 --- !u!4 &1514495672 stripped
 Transform:
   m_PrefabParentObject: {fileID: 474276, guid: 626e56c1ea9ca484d9c7b16eec83e0ed, type: 2}
@@ -2082,7 +2081,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 2
 --- !u!4 &1891157984 stripped
 Transform:
   m_PrefabParentObject: {fileID: 474276, guid: 626e56c1ea9ca484d9c7b16eec83e0ed, type: 2}

@@ -122,7 +122,7 @@ namespace BeatsByDre
 		public void Clear()
 		{
 			State = BeatState.Empty;
-			Instrument = InstrumentType.BassDrum;
+			Instrument = InstrumentType.None;
 			DurationMs = 500;
 			Velocity = 127;
 		}
