@@ -46,6 +46,7 @@ public class JointOrientation : MonoBehaviour
 
 	//Handle for Crosshair Animator
 	public Animator crossHair;
+	public GameObject crossHairObject;
 
 	void Start () {
 		// Begin with drumstick
@@ -141,6 +142,8 @@ public class JointOrientation : MonoBehaviour
 					var beat = (InstrumentCan)grabbedBeat.GetComponent(typeof(InstrumentCan));
 					_heldInstrument = beat.Instrument;
 					Grab = 1;
+
+					InstramentGameobject(_heldInstrument, crossHairObject);
 				}
 				else if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)){
 					// Get the beat that is being raycast
@@ -155,7 +158,12 @@ public class JointOrientation : MonoBehaviour
 						grabbedScript.Clear();
 
 						//set drum animator thng
-						jellyHandler = grabbedBeat; 
+						jellyHandler = grabbedBeat;
+
+						pipHandler pip = grabbedBeat.transform.GetChild (0).GetComponent<pipHandler> ();
+						pip.disappear ();
+
+						InstramentGameobject(_heldInstrument, crossHairObject);
 					}else{
 						Grab = 2;
 					}
@@ -205,7 +213,7 @@ public class JointOrientation : MonoBehaviour
 			//object has been grabbed
 		} else if (Grab == 1) {
 
-			if (thalmicMyo.pose == Pose.FingersSpread) {
+			if (thalmicMyo.pose == Pose.FingersSpread || Input.GetKeyDown("d")) {
 				//set grab trigger for crossHair
 				crossHair.SetTrigger("Release");
 
@@ -222,8 +230,6 @@ public class JointOrientation : MonoBehaviour
 				jellyHandler = null;
 				}
 
-
-
 				RaycastHit hit;
 				Vector3 fwd = crossHair.transform.TransformDirection (Vector3.forward);
 				if (Physics.Raycast (transform.position, fwd, out hit, 15, BeatLayermask.value)) {
@@ -236,10 +242,10 @@ public class JointOrientation : MonoBehaviour
 					_heldInstrument = InstrumentType.None;
 				}
 
-
+				pipHandler pip = crossHairObject.transform.GetChild (0).GetComponent<pipHandler> ();
+				pip.disappear ();
 				hoveredBeat = null;
 				grabbedBeat = null;
-
 			} else {
 				//crossHair.transform.localScale = new Vector3 (0.05f, 0.05f, 0.0f);
 
@@ -281,7 +287,7 @@ public class JointOrientation : MonoBehaviour
 			}	
 		} else {
 
-			if (thalmicMyo.pose == Pose.FingersSpread) {
+			if (thalmicMyo.pose == Pose.FingersSpread || Input.GetKeyDown("d")) {
 				//set grab trigger for crossHair
 				crossHair.SetTrigger("Release");
 				Grab = 0;

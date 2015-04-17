@@ -2166,6 +2166,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 488892}
+  - 114: {fileID: 11430650}
   m_Layer: 0
   m_Name: instrumentPip
   m_TagString: Untagged
@@ -10293,6 +10294,17 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11430650
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 160616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1414fea98f2984fd98ef93b15ca9910f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
