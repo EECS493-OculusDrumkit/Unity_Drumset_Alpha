@@ -10,7 +10,7 @@ Clone this repo. To fully run the Unity portion make sure you've installed [Unit
 Clone the repo at [https://github.com/EECS493-OculusDrumkit/Music-Server.git](https://github.com/EECS493-OculusDrumkit/Music-Server.git) into the same directory that you cloned the Unity repository. To hook into sound playback, you'll need to make sure you have [Node.js](https://nodejs.org/) installed on your machine. In the cloned repo, navigate to the `Music-Server/server` on the command line and run `npm install` (If this fails, try with `sudo`). Next, install the demo of [Max/MSP](https://cycling74.com/downloads/) and open up the file at `Music_Server/patches/UDPtoLogic.maxpat`. This Max patch will listen for UDP packets from the server. At this point, you can play piano notes through Max, but if you'd like to actually hear drum sounds from the application you'll need to double click the `noteout` box at the bottom of the file and click "From Max 1". Then load up [Logic Pro X](https://itunes.apple.com/us/app/logic-pro-x/id634148309?mt=12) (This software retails for $200, and there are alternatives, like a demo version of Ableton Live 9; however this will require tweaking on the server to get just right). From Logic, open up `Music_Server/logic/MaxRouting/MaxRouting`, and the sound system should be hooked up. To run the server, just run `npm start` in `Music_Server/server`.
 
 ### Screenshots
-http://smgoodrich.com/images/DrumCircle.png
+![alt tag](http://smgoodrich.com/images/DrumCircle.png)
 
 ### Website
 http://smgoodrich.com/DrumCircle/
