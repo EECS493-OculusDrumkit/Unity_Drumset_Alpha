@@ -13,7 +13,7 @@ Clone the repo at [https://github.com/EECS493-OculusDrumkit/Music-Server.git](ht
 Coming soon
 
 ### Website
-Coming soon
+http://smgoodrich.com/DrumCircle/
 
 ### Contribution Breakdown
 [Sean Goodrich](https://github.com/smgood)
